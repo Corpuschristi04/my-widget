@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wealth Management PRO® - 401(k) Suite</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Encapsulated styles - won't affect other page elements */
+        .wealth-widget-container {
+            --tech-bg: linear-gradient(135deg, #0c0e1b 0%, #0f172a 50%, #0c0e1b 100%);
+            --tech-accent: #8a2be2;
+            --tech-secondary: #6a11cb;
+            --tech-gradient: linear-gradient(45deg, var(--tech-secondary), var(--tech-accent));
+            --card-bg: rgba(21, 32, 43, 0.4);
+            --text-light: #ecf0f1;
+            --text-muted: #bdc3c7;
+            --input-bg: rgba(20, 25, 35, 0.4);
+            --border-color: rgba(138, 43, 226, 0.3);
+            --accent-blue: #3498db;
+            --accent-green: #2ecc71;
+            --accent-cyan: #00ffff;
+            --accent-yellow: #ffff00;
+            --accent-purple: #9b59b6;
+            --glow-blue: 0 0 15px rgba(52, 152, 219, 0.7);
+            --glow-purple: 0 0 15px rgba(138, 43, 226, 0.7);
+            --glow-cyan: 0 0 15px rgba(0, 255, 255, 0.5);
+            
+            color: var(--text-light);
+            position: relative;
+            overflow-x: hidden;
+            z-index: 0;
+            background: var(--tech-bg);
+            background-size: 200% 200%;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), var(--glow-purple);
+            overflow: hidden;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            backdrop-filter: blur(10px);
+            font-family: 'Exo 2', 'Orbitron', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1400px;
+            margin: 20px auto;
+        }
+        
+        /* Tech circuit board pattern */
+        .wealth-widget-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(138, 43, 226, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.3;
+            animation: wm-circuitMove 60s linear infinite;
+        }
+        
+        @keyframes wm-techBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes wm-circuitMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+        
+        /* Particle animation */
+        .wm-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .wm-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(138, 43, 226, 0.3);
+            animation: wm-float 15s infinite linear;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+        
+        .wm-blue-particle {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        .wm-green-particle {
+            background: rgba(0, 255, 128, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 128, 0.5);
+        }
+        
+        @keyframes wm-float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-1000px) translateX(1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Main container */
+        .wm-app-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+        }
+        
+        .wm-app-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 15px;
+            background: var(--card-bg);
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.5), var(--glow-purple);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+        
+        .wm-app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.2), transparent);
+            animation: wm-techScan 3s linear infinite;
+        }
+        
+        @keyframes wm-techScan {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+        
+        .wm-app-header::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--tech-gradient);
+            border-radius: 2px;
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.7);
+        }
+        
+        .wm-app-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #8a2be2, #6a11cb, #00c6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.4);
+        }
+        
+        .wm-app-header p {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .wm-pro-badge {
+            background: var(--tech-gradient);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px rgba(138, 43, 226, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(138, 43, 226, 0.5); }
+        }
+        
+        /* Calculator container */
+        .wm-calculator-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.5), var(--glow-purple);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .wm-calculator-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 85% 15%, rgba(138, 43, 226, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 15% 85%, rgba(106, 17, 203, 0.15) 0%, transparent 30%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .wm-calculator-header {
+            padding: 1.8rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .wm-pro-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--tech-gradient);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 10;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+        
+        .wm-calculator-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .wm-calculator-header p {
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+        
+        .wm-calculator-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+        
+        .wm-input-section {
+            flex: 1;
+            min-width: 380px;
+            padding: 2rem;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .wm-input-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        .wm-input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .wm-input-with-icon {
+            position: relative;
+        }
+        
+        .wm-input-with-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--tech-accent);
+            font-size: 1rem;
+            z-index: 1;
+        }
+        
+        .wm-input-with-icon input,
+        .wm-input-with-icon select {
+            width: 100%;
+            padding: 14px 14px 14px 42px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            height: 50px;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        .wm-input-with-icon input:focus,
+        .wm-input-with-icon select:focus {
+            outline: none;
+            border-color: var(--tech-accent);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3), var(--glow-purple);
+        }
+        
+        .wm-range-slider {
+            margin-top: 8px;
+            background: var(--input-bg);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .wm-range-slider input[type="range"] {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .wm-range-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--tech-accent);
+            cursor: pointer;
+            box-shadow: var(--glow-purple);
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+        
+        .wm-range-slider input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+        }
+        
+        .wm-range-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .wm-advanced-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--tech-accent);
+            cursor: pointer;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 10px 15px;
+            background: var(--input-bg);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .wm-advanced-toggle:hover {
+            background: rgba(138, 43, 226, 0.1);
+            box-shadow: var(--glow-purple);
+        }
+        
+        .wm-advanced-section {
+            display: none;
+            background: var(--input-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .wm-advanced-section.active {
+            display: block;
+            animation: wm-widgetFadeIn 0.5s ease-out forwards;
+        }
+        
+        @keyframes wm-widgetFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .wm-button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 1.5rem;
+        }
+        
+        .wm-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Exo 2', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .wm-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .wm-btn:hover::before {
+            left: 100%;
+        }
+        
+        .wm-btn-primary {
+            background: var(--tech-gradient);
+            color: white;
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.3), var(--glow-purple);
+        }
+        
+        .wm-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(106, 17, 203, 0.4), var(--glow-purple);
+        }
+        
+        .wm-btn-primary:active {
+            transform: translateY(1px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        }
+        
+        .wm-btn-secondary {
+            background: transparent;
+            border: 2px solid var(--tech-accent);
+            color: var(--tech-accent);
+        }
+        
+        .wm-btn-secondary:hover {
+            background: rgba(138, 43, 226, 0.1);
+            box-shadow: var(--glow-purple);
+        }
+        
+        .wm-results-section {
+            flex: 1.5;
+            min-width: 400px;
+            padding: 2rem;
+            background: rgba(30, 41, 59, 0.4);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+        
+        .wm-results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .wm-results-header h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .wm-risk-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(138, 43, 226, 0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+        
+        .wm-risk-value {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .wm-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .wm-metric-card {
+            background: var(--input-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .wm-metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), var(--glow-purple);
+        }
+        
+        .wm-metric-card i {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--accent-cyan);
+        }
+        
+        .wm-metric-card h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .wm-metric-card .value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-shadow: var(--glow-cyan);
+        }
+        
+        .wm-metric-card .sub-value {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        .wm-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background: var(--input-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .wm-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        .wm-tab.active {
+            background: rgba(138, 43, 226, 0.2);
+            color: var(--tech-accent);
+            box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+        
+        .wm-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .wm-chart-container {
+            position: relative;
+            height: 300px;
+            background: var(--input-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .wm-chart-title {
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .wm-chart-title i {
+            font-size: 1.4rem;
+        }
+        
+        .wm-disclaimer {
+            padding: 1.5rem 2rem;
+            background: rgba(30, 41, 59, 0.8);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .wm-disclaimer p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .wm-brand-footer {
+            padding: 1rem 2rem;
+            background: rgba(30, 41, 59, 0.9);
+            color: var(--tech-accent);
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(138, 43, 226, 0.2);
+        }
+        
+        .wm-brand-footer sup {
+            font-size: 0.6em;
+            vertical-align: super;
+        }
+        
+        .wm-info-tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 8px;
+            cursor: help;
+        }
+        
+        .wm-info-tooltip .wm-tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(30, 41, 59, 0.9);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--glow-purple);
+        }
+        
+        .wm-info-tooltip:hover .wm-tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Calculator intro */
+        .wm-calculator-intro {
+            margin-bottom: 1.8rem;
+            padding: 1.2rem;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.1);
+        }
+        
+        .wm-calculator-intro p {
+            font-size: 0.95rem;
+            color: var(--tech-accent);
+            text-align: center;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .wm-calculator-content {
+                flex-direction: column;
+            }
+            
+            .wm-input-section {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .wm-results-section {
+                border-left: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .wm-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wm-app-header h1 {
+                font-size: 36px;
+            }
+            
+            .wm-button-group {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .wm-app-header h1 {
+                font-size: 32px;
+            }
+            
+            .wm-input-section, 
+            .wm-results-section {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Holographic effect for charts */
+        .wm-holographic {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(138, 43, 226, 0.1) 0%, 
+                rgba(106, 17, 203, 0.1) 50%, 
+                rgba(138, 43, 226, 0.1) 100%);
+            pointer-events: none;
+            z-index: -1;
+            border-radius: 10px;
+        }
+        
+        /* Glowing effect for metric cards */
+        .wm-metric-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #8a2be2, #6a11cb, #8a2be2);
+            z-index: -1;
+            border-radius: 12px;
+            opacity: 0.5;
+            filter: blur(5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="wealth-widget-container">
+        <!-- Background particles -->
+        <div class="wm-particles" id="wm-particles"></div>
+        
+        <div class="wm-app-container">
+            <div class="wm-app-header">
+                <h1><i class="fas fa-brain-circuit"></i> WEALTH MANAGEMENT PRO<sup>®</sup></h1>
+                <p>Advanced 401(k) Projection Suite with Neural Forecasting Technology</p>
+                <div class="wm-pro-badge">
+                    <i class="fas fa-certificate"></i> QUANTUM EDITION
+                </div>
+            </div>
+            
+            <div class="wm-calculator-container">
+                <div class="wm-pro-tag">NEURAL AI</div>
+                <div class="wm-calculator-header">
+                    <h2><i class="fas fa-chart-network"></i> FUTURISTIC 401(k) ANALYTICS SUITE</h2>
+                    <p>Quantum financial modeling with predictive intelligence and risk simulation</p>
+                </div>
+                
+                <div class="wm-calculator-content">
+                    <div class="wm-input-section">
+                        <!-- Calculator introduction section -->
+                        <div class="wm-calculator-intro">
+                            <p><i class="fas fa-lightbulb"></i> Enter financial parameters for neural projection analysis</p>
+                        </div>
+                        
+                        <div class="wm-input-group">
+                            <label><i class="fas fa-calendar-alt"></i> CURRENT AGE</label>
+                            <div class="wm-input-with-icon">
+                                <i class="fas fa-birthday-cake"></i>
+                                <input type="number" id="wm-currentAge" min="25" max="80" placeholder="Years" value="45">
+                            </div>
+                            <div class="wm-range-slider">
+                                <input type="range" min="25" max="80" value="45" class="wm-slider" id="wm-currentAgeSlider">
+                                <div class="wm-range-values">
+                                    <span>25</span>
+                                    <span>80</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wm-input-group">
+                            <label><i class="fas fa-calendar-check"></i> RETIREMENT AGE</label>
+                            <div class="wm-input-with-icon">
+                                <i class="fas fa-umbrella-beach"></i>
+                                <input type="number" id="wm-retirementAge" min="50" max="85" placeholder="Years" value="65">
+                            </div>
+                            <div class="wm-range-slider">
+                                <input type="range" min="50" max="85" value="65" class="wm-slider" id="wm-retirementAgeSlider">
+                                <div class="wm-range-values">
+                                    <span>50</span>
+                                    <span>85</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wm-input-group">
+                            <label><i class="fas fa-dollar-sign"></i> CURRENT 401(k) BALANCE</label>
+                            <div class="wm-input-with-icon">
+                                <i class="fas fa-wallet"></i>
+                                <input type="number" id="wm-currentBalance" placeholder="USD" value="125000">
+                            </div>
+                        </div>
+                        
+                        <div class="wm-input-group">
+                            <label><i class="fas fa-money-bill-wave"></i> ANNUAL CONTRIBUTION</label>
+                            <div class="wm-input-with-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                                <input type="number" id="wm-annualContribution" placeholder="USD" value="22500">
+                            </div>
+                        </div>
+                        
+                        <div class="wm-input-group">
+                            <label><i class="fas fa-building"></i> EMPLOYER MATCH 
+                                <span class="wm-info-tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="wm-tooltip-text">Employer match as a percentage of your salary</span>
+                                </span>
+                            </label>
+                            <div class="wm-input-with-icon">
+                                <i class="fas fa-percent"></i>
+                                <input type="number" id="wm-employerMatch" step="0.1" placeholder="% of salary" value="4.5">
+                            </div>
+                        </div>
+                        
+                        <div class="wm-input-group">
+                            <label><i class="fas fa-chart-line"></i> EXPECTED ANNUAL RETURN</label>
+                            <div class="wm-input-with-icon">
+                                <i class="fas fa-percent"></i>
+                                <input type="number" id="wm-annualReturn" step="0.1" placeholder="%" value="7.2">
+                            </div>
+                            <div class="wm-range-slider">
+                                <input type="range" min="0" max="15" value="7.2" step="0.1" class="wm-slider" id="wm-returnSlider">
+                                <div class="wm-range-values">
+                                    <span>0%</span>
+                                    <span>15%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wm-advanced-toggle" id="wm-advancedToggle">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>ADVANCED QUANTUM PARAMETERS</span>
+                        </div>
+                        
+                        <div class="wm-advanced-section" id="wm-advancedSection">
+                            <div class="wm-input-group">
+                                <label><i class="fas fa-arrow-up"></i> ANNUAL SALARY GROWTH</label>
+                                <div class="wm-input-with-icon">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="wm-salaryGrowth" step="0.1" placeholder="%" value="3">
+                                </div>
+                            </div>
+                            
+                            <div class="wm-input-group">
+                                <label><i class="fas fa-chart-bar"></i> INFLATION RATE</label>
+                                <div class="wm-input-with-icon">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="wm-inflationRate" step="0.1" placeholder="%" value="2.5">
+                                </div>
+                            </div>
+                            
+                            <div class="wm-input-group">
+                                <label><i class="fas fa-exchange-alt"></i> CONTRIBUTION INCREASE RATE</label>
+                                <div class="wm-input-with-icon">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="wm-contributionIncrease" step="0.1" placeholder="%" value="2">
+                                </div>
+                            </div>
+                            
+                            <div class="wm-input-group">
+                                <label><i class="fas fa-balance-scale"></i> ASSET ALLOCATION</label>
+                                <div class="wm-input-with-icon">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <select id="wm-assetAllocation">
+                                        <option value="conservative">Conservative (30% Stocks / 70% Bonds)</option>
+                                        <option value="moderate" selected>Moderate (60% Stocks / 40% Bonds)</option>
+                                        <option value="aggressive">Aggressive (90% Stocks / 10% Bonds)</option>
+                                        <option value="quantum">Quantum Allocation</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wm-button-group">
+                            <button class="wm-btn wm-btn-primary" id="wm-calculateBtn">
+                                <i class="fas fa-calculator"></i> Run Quantum Simulation
+                            </button>
+                            <button class="wm-btn wm-btn-secondary" id="wm-resetBtn">
+                                <i class="fas fa-redo"></i> Reset Parameters
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="wm-results-section">
+                        <div class="wm-results-header">
+                            <h3><i class="fas fa-chart-bar"></i> Quantum Projection Results</h3>
+                            <div class="wm-risk-indicator">
+                                <span class="wm-risk-label">Risk Profile:</span>
+                                <span class="wm-risk-value" id="wm-riskProfile">Moderate</span>
+                            </div>
+                        </div>
+                        
+                        <div class="wm-metrics-grid">
+                            <div class="wm-metric-card">
+                                <i class="fas fa-hourglass-half"></i>
+                                <div class="metric-label">YEARS UNTIL RETIREMENT</div>
+                                <div class="value" id="wm-yearsUntilRetirement">20</div>
+                            </div>
+                            
+                            <div class="wm-metric-card">
+                                <i class="fas fa-piggy-bank"></i>
+                                <div class="metric-label">PROJECTED VALUE AT RETIREMENT</div>
+                                <div class="value" id="wm-projectedValue">$1,287,500</div>
+                                <div class="sub-value">In today's dollars</div>
+                            </div>
+                            
+                            <div class="wm-metric-card">
+                                <i class="fas fa-money-check-alt"></i>
+                                <div class="metric-label">MONTHLY RETIREMENT INCOME</div>
+                                <div class="value" id="wm-monthlyIncome">$4,290</div>
+                                <div class="sub-value">After taxes, in today's dollars</div>
+                            </div>
+                            
+                            <div class="wm-metric-card">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                <div class="metric-label">TOTAL CONTRIBUTIONS</div>
+                                <div class="value" id="wm-totalContributions">$900,000</div>
+                                <div class="sub-value">Employee + employer</div>
+                            </div>
+                        </div>
+                        
+                        <div class="wm-tabs">
+                            <button class="wm-tab active" data-tab="growth">Growth Projection</button>
+                            <button class="wm-tab" data-tab="contribution">Contribution Analysis</button>
+                            <button class="wm-tab" data-tab="withdrawal">Withdrawal Strategy</button>
+                        </div>
+                        
+                        <div class="wm-chart-container">
+                            <div class="wm-holographic"></div>
+                            <div class="wm-chart-title">
+                                <i class="fas fa-chart-line" id="wm-topChartIcon"></i>
+                                <span id="wm-topChartTitle">401(k) Value Over Time</span>
+                            </div>
+                            <canvas id="wm-growthChart"></canvas>
+                        </div>
+                        
+                        <div class="wm-chart-container">
+                            <div class="wm-holographic"></div>
+                            <div class="wm-chart-title">
+                                <i class="fas fa-chart-pie"></i> Portfolio Composition at Retirement
+                            </div>
+                            <canvas id="wm-compositionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wm-disclaimer">
+                    <p><strong>PRO<sup>®</sup> Wealth Management Suite</strong> is a registered trademark used under license by Global Financial Analytics LLC. This model is for professional use only and incorporates proprietary methodologies.</p>
+                    <p>Financial projections are highly sensitive to input assumptions. This tool does not constitute financial advice. Users should conduct their own due diligence and consult with financial professionals before making investment decisions. All outputs are estimates based on the provided inputs and standard financial models.</p>
+                </div>
+                
+                <div class="wm-brand-footer">
+                    Quantum Wealth Suite<sup>™</sup> - Advanced Financial Analytics
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Create particles for background
+            function createParticles() {
+                const particlesContainer = document.getElementById('wm-particles');
+                const particleCount = 50;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    
+                    // Randomly assign particle type (purple, blue, or green)
+                    const particleType = Math.floor(Math.random() * 3);
+                    if (particleType === 0) {
+                        particle.classList.add('wm-particle');
+                    } else if (particleType === 1) {
+                        particle.classList.add('wm-blue-particle');
+                    } else {
+                        particle.classList.add('wm-green-particle');
+                    }
+                    
+                    // Random size
+                    const size = Math.random() * 5 + 1;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // Random position
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    
+                    // Random animation duration
+                    const duration = Math.random() * 20 + 10;
+                    particle.style.animationDuration = `${duration}s`;
+                    
+                    // Random animation delay
+                    const delay = Math.random() * 5;
+                    particle.style.animationDelay = `${delay}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            // DOM Elements
+            const advancedToggle = document.getElementById('wm-advancedToggle');
+            const advancedSection = document.getElementById('wm-advancedSection');
+            const calculateBtn = document.getElementById('wm-calculateBtn');
+            const resetBtn = document.getElementById('wm-resetBtn');
+            const tabs = document.querySelectorAll('.wm-tab');
+            const riskProfile = document.getElementById('wm-riskProfile');
+            
+            // Slider Elements
+            const currentAgeSlider = document.getElementById('wm-currentAgeSlider');
+            const currentAgeInput = document.getElementById('wm-currentAge');
+            const retirementAgeSlider = document.getElementById('wm-retirementAgeSlider');
+            const retirementAgeInput = document.getElementById('wm-retirementAge');
+            const returnSlider = document.getElementById('wm-returnSlider');
+            const annualReturnInput = document.getElementById('wm-annualReturn');
+            
+            // Input Elements
+            const currentBalanceInput = document.getElementById('wm-currentBalance');
+            const annualContributionInput = document.getElementById('wm-annualContribution');
+            const employerMatchInput = document.getElementById('wm-employerMatch');
+            const salaryGrowthInput = document.getElementById('wm-salaryGrowth');
+            const inflationRateInput = document.getElementById('wm-inflationRate');
+            const contributionIncreaseInput = document.getElementById('wm-contributionIncrease');
+            const assetAllocationSelect = document.getElementById('wm-assetAllocation');
+            
+            // Output Elements
+            const yearsUntilRetirementEl = document.getElementById('wm-yearsUntilRetirement');
+            const projectedValueEl = document.getElementById('wm-projectedValue');
+            const monthlyIncomeEl = document.getElementById('wm-monthlyIncome');
+            const totalContributionsEl = document.getElementById('wm-totalContributions');
+            
+            // Charts
+            const growthCtx = document.getElementById('wm-growthChart').getContext('2d');
+            const compositionCtx = document.getElementById('wm-compositionChart').getContext('2d');
+            let topChart = null;
+            let compositionChart = null;
+            
+            // Data storage
+            let accumulationData = null;
+            let retirementData = null;
+            
+            // Initialize sliders
+            function initSliders() {
+                // Current Age
+                currentAgeSlider.value = currentAgeInput.value || 45;
+                currentAgeInput.value = currentAgeInput.value || 45;
+                currentAgeSlider.addEventListener('input', () => {
+                    currentAgeInput.value = currentAgeSlider.value;
+                    calculateProjection();
+                });
+                currentAgeInput.addEventListener('input', () => {
+                    if (currentAgeInput.value < 25) currentAgeInput.value = 25;
+                    if (currentAgeInput.value > 80) currentAgeInput.value = 80;
+                    currentAgeSlider.value = currentAgeInput.value;
+                    calculateProjection();
+                });
+                
+                // Retirement Age
+                retirementAgeSlider.value = retirementAgeInput.value || 65;
+                retirementAgeInput.value = retirementAgeInput.value || 65;
+                retirementAgeSlider.addEventListener('input', () => {
+                    retirementAgeInput.value = retirementAgeSlider.value;
+                    calculateProjection();
+                });
+                retirementAgeInput.addEventListener('input', () => {
+                    if (retirementAgeInput.value < 50) retirementAgeInput.value = 50;
+                    if (retirementAgeInput.value > 85) retirementAgeInput.value = 85;
+                    retirementAgeSlider.value = retirementAgeInput.value;
+                    calculateProjection();
+                });
+                
+                // Annual Return
+                returnSlider.value = annualReturnInput.value || 7.2;
+                annualReturnInput.value = annualReturnInput.value || 7.2;
+                returnSlider.addEventListener('input', () => {
+                    annualReturnInput.value = returnSlider.value;
+                    calculateProjection();
+                });
+                annualReturnInput.addEventListener('input', () => {
+                    if (annualReturnInput.value < 0) annualReturnInput.value = 0;
+                    if (annualReturnInput.value > 15) annualReturnInput.value = 15;
+                    returnSlider.value = annualReturnInput.value;
+                    calculateProjection();
+                });
+            }
+            
+            // Toggle advanced section
+            advancedToggle.addEventListener('click', () => {
+                advancedSection.classList.toggle('active');
+                advancedToggle.querySelector('i').className = advancedSection.classList.contains('active') ? 
+                    'fas fa-chevron-up' : 'fas fa-chevron-down';
+            });
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderTabChart(tab.dataset.tab);
+                });
+            });
+            
+            // Reset calculator
+            function resetCalculator() {
+                currentAgeInput.value = 45;
+                currentAgeSlider.value = 45;
+                retirementAgeInput.value = 65;
+                retirementAgeSlider.value = 65;
+                currentBalanceInput.value = 125000;
+                annualContributionInput.value = 22500;
+                employerMatchInput.value = 4.5;
+                annualReturnInput.value = 7.2;
+                returnSlider.value = 7.2;
+                salaryGrowthInput.value = 3;
+                inflationRateInput.value = 2.5;
+                contributionIncreaseInput.value = 2;
+                assetAllocationSelect.value = 'moderate';
+                
+                // Reset outputs
+                yearsUntilRetirementEl.textContent = "20";
+                projectedValueEl.textContent = "$1,287,500";
+                monthlyIncomeEl.textContent = "$4,290";
+                totalContributionsEl.textContent = "$900,000";
+                riskProfile.textContent = "Moderate";
+                
+                // Close advanced section
+                advancedSection.classList.remove('active');
+                advancedToggle.querySelector('i').className = 'fas fa-chevron-down';
+                
+                // Reset charts
+                if (topChart) {
+                    topChart.destroy();
+                    topChart = null;
+                }
+                if (compositionChart) {
+                    compositionChart.destroy();
+                    compositionChart = null;
+                }
+                
+                // Clear chart canvases
+                growthCtx.clearRect(0, 0, growthCtx.canvas.width, growthCtx.canvas.height);
+                compositionCtx.clearRect(0, 0, compositionCtx.canvas.width, compositionCtx.canvas.height);
+                
+                // Recalculate with default values
+                calculateProjection();
+            }
+            
+            // Format currency
+            function formatCurrency(value) {
+                if (value === 0) return '$0';
+                if (value < 0) return '-' + formatCurrency(-value);
+                
+                if (value >= 1000000000) {
+                    return '$' + (value / 1000000000).toFixed(2) + 'B';
+                }
+                if (value >= 1000000) {
+                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                } 
+                if (value >= 1000) {
+                    return '$' + (value / 1000).toFixed(0) + 'K';
+                }
+                
+                return '$' + Math.round(value).toLocaleString();
+            }
+            
+            // Get current active tab
+            function getCurrentTab() {
+                const activeTab = document.querySelector('.wm-tab.active');
+                return activeTab.dataset.tab;
+            }
+            
+            // Update chart title based on active tab
+            function updateChartTitle(tab) {
+                const chartTitle = document.getElementById('wm-topChartTitle');
+                const chartIcon = document.getElementById('wm-topChartIcon');
+                
+                if (tab === 'growth') {
+                    chartTitle.textContent = "401(k) Value Over Time";
+                    chartIcon.className = "fas fa-chart-line";
+                } else if (tab === 'contribution') {
+                    chartTitle.textContent = "Contributions vs Investment Growth";
+                    chartIcon.className = "fas fa-money-bill-wave";
+                } else if (tab === 'withdrawal') {
+                    chartTitle.textContent = "Retirement Withdrawal Strategy";
+                    chartIcon.className = "fas fa-hand-holding-usd";
+                }
+            }
+            
+            // Render chart based on active tab
+            function renderTabChart(tab) {
+                if (!accumulationData) return;
+                
+                updateChartTitle(tab);
+                
+                if (topChart) {
+                    topChart.destroy();
+                }
+                
+                if (tab === 'growth') {
+                    updateGrowthChart();
+                } else if (tab === 'contribution') {
+                    updateContributionChart();
+                } else if (tab === 'withdrawal') {
+                    updateWithdrawalChart();
+                }
+            }
+            
+            // Update growth chart
+            function updateGrowthChart() {
+                const retirementAgeValue = parseInt(retirementAgeInput.value);
+                const currentAgeValue = parseInt(currentAgeInput.value);
+                
+                topChart = new Chart(growthCtx, {
+                    type: 'line',
+                    data: {
+                        labels: accumulationData.ages,
+                        datasets: [{
+                            label: '401(k) Balance',
+                            data: accumulationData.balances,
+                            borderColor: '#00ffff', // Changed to cyan
+                            backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            fill: true,
+                            tension: 0.2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('en-US', {
+                                                style: 'currency',
+                                                currency: 'USD',
+                                                maximumFractionDigits: 0
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    retirementLine: {
+                                        type: 'line',
+                                        mode: 'vertical',
+                                        scaleID: 'x',
+                                        value: retirementAgeValue,
+                                        borderColor: 'rgba(138, 43, 226, 0.7)',
+                                        borderWidth: 2,
+                                        borderDash: [5, 5],
+                                        label: {
+                                            content: 'Retirement',
+                                            enabled: true,
+                                            position: 'top',
+                                            backgroundColor: 'rgba(138, 43, 226, 0.7)'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    callback: function(value) {
+                                        if (value >= 1000000) {
+                                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                                        } 
+                                        if (value >= 1000) {
+                                            return '$' + (value / 1000).toFixed(0) + 'K';
+                                        }
+                                        return '$' + value;
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Age',
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Update contribution chart
+            function updateContributionChart() {
+                topChart = new Chart(growthCtx, {
+                    type: 'line',
+                    data: {
+                        labels: accumulationData.ages,
+                        datasets: [
+                            {
+                                label: 'Total Balance',
+                                data: accumulationData.balances,
+                                borderColor: '#00ffff', // Cyan
+                                backgroundColor: 'transparent',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                tension: 0.2
+                            },
+                            {
+                                label: 'Cumulative Contributions',
+                                data: accumulationData.cumulativeContributions,
+                                borderColor: '#00ff9d', // Green
+                                borderWidth: 2,
+                                borderDash: [5,5],
+                                pointRadius: 0,
+                                tension: 0.2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('en-US', {
+                                                style: 'currency',
+                                                currency: 'USD',
+                                                maximumFractionDigits: 0
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                            legend: {
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    callback: function(value) {
+                                        if (value >= 1000000) {
+                                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                                        } 
+                                        if (value >= 1000) {
+                                            return '$' + (value / 1000).toFixed(0) + 'K';
+                                        }
+                                        return '$' + value;
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Age',
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Update withdrawal chart
+            function updateWithdrawalChart() {
+                topChart = new Chart(growthCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: retirementData.ages,
+                        datasets: [
+                            {
+                                type: 'line',
+                                label: 'Account Balance',
+                                data: retirementData.balances,
+                                borderColor: '#00ffff', // Cyan
+                                backgroundColor: 'transparent',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                tension: 0.2,
+                                yAxisID: 'y'
+                            },
+                            {
+                                type: 'bar',
+                                label: 'Annual Withdrawal',
+                                data: retirementData.withdrawals,
+                                backgroundColor: 'rgba(185, 103, 255, 0.7)', // Light purple
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('en-US', {
+                                                style: 'currency',
+                                                currency: 'USD',
+                                                maximumFractionDigits: 0
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                            legend: {
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    callback: function(value) {
+                                        if (value >= 1000000) {
+                                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                                        } 
+                                        if (value >= 1000) {
+                                            return '$' + (value / 1000).toFixed(0) + 'K';
+                                        }
+                                        return '$' + value;
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Account Balance',
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false,
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    callback: function(value) {
+                                        if (value >= 1000000) {
+                                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                                        } 
+                                        if (value >= 1000) {
+                                            return '$' + (value / 1000).toFixed(0) + 'K';
+                                        }
+                                        return '$' + value;
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Annual Withdrawal',
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Age',
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Update composition chart
+            function updateCompositionChart(allocation) {
+                if (compositionChart) {
+                    compositionChart.destroy();
+                }
+                
+                // Allocation data based on risk profile
+                const allocations = {
+                    'conservative': {
+                        'US Stocks': 15,
+                        'International Stocks': 15,
+                        'Corporate Bonds': 25,
+                        'Government Bonds': 35,
+                        'Cash & Equivalents': 10
+                    },
+                    'moderate': {
+                        'US Stocks': 35,
+                        'International Stocks': 25,
+                        'Corporate Bonds': 20,
+                        'Government Bonds': 15,
+                        'REITs': 5
+                    },
+                    'aggressive': {
+                        'US Stocks': 50,
+                        'International Stocks': 35,
+                        'Emerging Markets': 10,
+                        'Corporate Bonds': 5
+                    },
+                    'quantum': {
+                        'Quantum Stocks': 40,
+                        'Neural Bonds': 30,
+                        'Crypto Assets': 15,
+                        'AI Investments': 10,
+                        'Metaverse Funds': 5
+                    }
+                };
+                
+                const data = allocations[allocation];
+                const colors = [
+                    'rgba(0, 255, 255, 0.8)',      // Cyan
+                    'rgba(0, 255, 157, 0.8)',       // Green
+                    'rgba(185, 103, 255, 0.8)',      // Light purple
+                    'rgba(255, 255, 0, 0.8)',        // Yellow
+                    'rgba(52, 152, 219, 0.8)'        // Blue
+                ];
+                
+                compositionChart = new Chart(compositionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(data),
+                        datasets: [{
+                            data: Object.values(data),
+                            backgroundColor: colors,
+                            borderColor: 'rgba(30, 41, 59, 0.8)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    padding: 10,
+                                    font: {
+                                        size: 10
+                                    },
+                                    boxWidth: 10
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.parsed}%`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '55%'
+                    }
+                });
+            }
+            
+            // Calculate 401(k) projection
+            function calculateProjection() {
+                // Get input values with defaults
+                const currentAge = parseInt(currentAgeInput.value || 45);
+                const retirementAge = parseInt(retirementAgeInput.value || 65);
+                const currentBalance = parseFloat(currentBalanceInput.value || 125000);
+                const annualContribution = parseFloat(annualContributionInput.value || 22500);
+                const employerMatch = parseFloat(employerMatchInput.value || 4.5) / 100;
+                const annualReturn = parseFloat(annualReturnInput.value || 7.2) / 100;
+                const salaryGrowth = parseFloat(salaryGrowthInput.value || 3) / 100;
+                const inflationRate = parseFloat(inflationRateInput.value || 2.5) / 100;
+                const contributionIncrease = parseFloat(contributionIncreaseInput.value || 2) / 100;
+                const allocation = assetAllocationSelect.value || 'moderate';
+                
+                // Validate ages
+                if (retirementAge <= currentAge) {
+                    return;
+                }
+                
+                // Basic calculations
+                const yearsUntilRetirement = Math.max(0, retirementAge - currentAge);
+                const retirementYears = 30; // Default retirement duration
+                
+                // Calculate total contributions with employer match
+                let baseSalary = annualContribution / 0.15; // Estimate salary based on max contribution
+                let totalContributions = 0;
+                
+                // Project growth - accumulation phase
+                let balance = currentBalance;
+                let annualContributionAdjusted = annualContribution;
+                
+                // Data for charts
+                const accumulationAges = [currentAge];
+                const accumulationBalances = [currentBalance];
+                const cumulativeContributions = [0];
+                let cumulativeEmployee = 0;
+                let cumulativeEmployer = 0;
+                
+                for (let year = 1; year <= yearsUntilRetirement; year++) {
+                    // Apply market return
+                    balance *= (1 + annualReturn);
+                    
+                    // Add contributions (employee + employer match)
+                    const employerContribution = baseSalary * employerMatch;
+                    balance += annualContributionAdjusted + employerContribution;
+                    totalContributions += annualContributionAdjusted + employerContribution;
+                    
+                    // Update cumulative contributions
+                    cumulativeEmployee += annualContributionAdjusted;
+                    cumulativeEmployer += employerContribution;
+                    
+                    // Increase contributions and salary for next year
+                    annualContributionAdjusted *= (1 + contributionIncrease);
+                    baseSalary *= (1 + salaryGrowth);
+                    
+                    // Store history for chart
+                    accumulationAges.push(currentAge + year);
+                    accumulationBalances.push(balance);
+                    cumulativeContributions.push(cumulativeEmployee + cumulativeEmployer);
+                }
+                
+                // Store accumulation data
+                accumulationData = {
+                    ages: accumulationAges,
+                    balances: accumulationBalances,
+                    cumulativeContributions: cumulativeContributions
+                };
+                
+                // Calculate retirement income
+                const safeWithdrawalRate = 0.04;
+                let annualWithdrawal = balance * safeWithdrawalRate;
+                const monthlyWithdrawal = annualWithdrawal / 12;
+                
+                // Adjust for inflation
+                const inflationFactor = Math.pow(1 + inflationRate, yearsUntilRetirement);
+                const inflationAdjustedMonthly = monthlyWithdrawal / inflationFactor;
+                
+                // Project retirement phase
+                const retirementAges = [retirementAge];
+                const retirementBalances = [balance];
+                const retirementWithdrawals = [0];
+                
+                let retirementBalance = balance;
+                
+                for (let year = 1; year <= retirementYears; year++) {
+                    // Withdraw at the beginning of the year
+                    retirementBalance -= annualWithdrawal;
+                    
+                    // Apply market return
+                    retirementBalance *= (1 + annualReturn);
+                    
+                    // Store data
+                    retirementAges.push(retirementAge + year);
+                    retirementBalances.push(retirementBalance);
+                    retirementWithdrawals.push(annualWithdrawal);
+                    
+                    // Adjust withdrawal for inflation
+                    annualWithdrawal *= (1 + inflationRate);
+                }
+                
+                // Store retirement data
+                retirementData = {
+                    ages: retirementAges,
+                    balances: retirementBalances,
+                    withdrawals: retirementWithdrawals
+                };
+                
+                // Update UI
+                yearsUntilRetirementEl.textContent = yearsUntilRetirement;
+                projectedValueEl.textContent = formatCurrency(balance);
+                monthlyIncomeEl.textContent = formatCurrency(inflationAdjustedMonthly);
+                totalContributionsEl.textContent = formatCurrency(cumulativeEmployee + cumulativeEmployer);
+                
+                // Update risk profile based on allocation
+                const riskProfiles = {
+                    'conservative': 'Conservative',
+                    'moderate': 'Moderate',
+                    'aggressive': 'Aggressive',
+                    'quantum': 'Quantum'
+                };
+                riskProfile.textContent = riskProfiles[allocation];
+                
+                // Update charts
+                updateCompositionChart(allocation);
+                renderTabChart(getCurrentTab());
+            }
+            
+            // Initialize calculator
+            function init() {
+                createParticles();
+                initSliders();
+                calculateBtn.addEventListener('click', calculateProjection);
+                resetBtn.addEventListener('click', resetCalculator);
+                
+                // Add event listeners to all inputs
+                const inputs = document.querySelectorAll('.wealth-widget-container input, .wealth-widget-container select');
+                inputs.forEach(input => {
+                    input.addEventListener('input', calculateProjection);
+                });
+                
+                // Explicitly register the annotation plugin
+                Chart.register(Chart.Annotation);
+                
+                // Run initial calculation
+                calculateProjection();
+            }
+            
+            // Start the calculator
+            init();
+        })();
+    </script>
+</body>
+</html>
