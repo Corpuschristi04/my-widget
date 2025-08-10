@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuySense™ - Real Estate Analysis Suite | PRO Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* SCOPED CONTAINER - Fixed positioning */
+        #buysense-widget-container {
+            --tech-primary: #0c0e1b;
+            --tech-secondary: #0f1a14;
+            --tech-accent: #00c853;
+            --tech-highlight: #43d9e0;
+            --tech-purple: #7a42f4;
+            --tech-orange: #ff9a3c;
+            --tech-success: #00cc99;
+            --tech-warning: #ffcc00;
+            --tech-danger: #ff6666;
+            --text-light: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(21, 25, 40, 0.7);
+            --card-border: rgba(0, 200, 83, 0.3);
+            --glow-primary: 0 0 15px rgba(0, 200, 83, 0.5);
+            --glow-secondary: 0 0 10px rgba(67, 217, 224, 0.4);
+            
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(26, 29, 58, 0.5) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(12, 14, 27, 0.6) 0%, transparent 30%),
+                linear-gradient(135deg, var(--tech-primary) 0%, var(--tech-secondary) 100%);
+            display: block;
+            padding: 30px 15px;
+            position: relative;
+            z-index: 1;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 1400px;
+            width: 95%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            font-family: 'Exo 2', sans-serif;
+            color: var(--text-light);
+        }
+
+        #buysense-widget-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(77, 91, 206, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(77, 91, 206, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        #buysense-widget-container .circuit-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background: 
+                linear-gradient(90deg, transparent 50%, var(--tech-highlight) 50%),
+                linear-gradient(transparent 50%, var(--tech-highlight) 50%);
+            background-size: 10px 10px;
+        }
+
+        #buysense-widget-container .tech-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #buysense-widget-container .tech-particle {
+            position: absolute;
+            background-color: var(--tech-accent);
+            border-radius: 50%;
+            animation: techPulse 3s infinite ease-in-out;
+            opacity: 0.3;
+        }
+
+        @keyframes techPulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.2; }
+            50% { transform: scale(1.2); opacity: 0.4; }
+        }
+
+        #buysense-widget-container .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(67, 217, 224, 0.3);
+            box-shadow: 0 0 10px rgba(67, 217, 224, 0.5);
+            animation: scan 8s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        #buysense-widget-container .tech-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--tech-highlight), 
+                var(--tech-accent), 
+                var(--tech-highlight), 
+                transparent);
+            z-index: 20;
+        }
+
+        #buysense-widget-container .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        #buysense-widget-container .pro-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 25px 30px;
+            border-radius: 15px;
+            background: var(--card-bg);
+            box-shadow: var(--glow-primary);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        #buysense-widget-container .pro-header::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--tech-accent);
+            border-radius: 2px;
+        }
+
+        #buysense-widget-container .pro-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--tech-highlight), var(--tech-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        #buysense-widget-container .pro-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        #buysense-widget-container .pro-badge {
+            background: linear-gradient(45deg, var(--tech-accent), #00b248);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(0, 200, 83, 0.4);
+        }
+
+        /* Section Containers */
+        #buysense-widget-container .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            z-index: 10;
+            position: relative;
+        }
+
+        #buysense-widget-container .section-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            line-height: 1.6;
+            animation: widgetFadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes widgetFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #buysense-widget-container .section-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 85% 15%, rgba(0, 200, 83, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 15% 85%, rgba(105, 240, 174, 0.1) 0%, transparent 30%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        #buysense-widget-container .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        #buysense-widget-container .section-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(20, 30, 40, 0.5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+        }
+
+        #buysense-widget-container .section-icon i {
+            font-size: 20px;
+            background: linear-gradient(45deg, var(--tech-highlight), var(--tech-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #buysense-widget-container .section-header h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        #buysense-widget-container .section-header p {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* Tabs Navigation */
+        #buysense-widget-container .tabs-container {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #buysense-widget-container .tabs {
+            display: flex;
+            background: rgba(21, 32, 43, 0.8);
+            border-radius: 12px;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        #buysense-widget-container .tab-button {
+            padding: 12px 25px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #buysense-widget-container .tab-button:hover {
+            background: rgba(67, 217, 224, 0.1);
+        }
+
+        #buysense-widget-container .tab-button.active {
+            background: linear-gradient(45deg, var(--tech-accent), #00b248);
+            color: #0a1e12;
+            border-color: var(--tech-accent);
+            box-shadow: var(--glow-secondary);
+        }
+
+        #buysense-widget-container .tab-content {
+            display: none;
+        }
+
+        #buysense-widget-container .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input Groups */
+        #buysense-widget-container .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        #buysense-widget-container .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #buysense-widget-container .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #buysense-widget-container .input-group label i {
+            color: var(--tech-accent);
+            font-size: 14px;
+        }
+
+        #buysense-widget-container .input-field {
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            background: rgba(15, 20, 35, 0.8);
+            border: 1px solid var(--card-border);
+        }
+
+        #buysense-widget-container .input-field .symbol {
+            width: 40px;
+            height: 40px;
+            background: rgba(20, 25, 35, 0.4);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tech-accent);
+            font-size: 16px;
+        }
+
+        #buysense-widget-container .input-field input,
+        #buysense-widget-container .input-field select {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            background: transparent;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            height: 40px;
+            border: none;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        #buysense-widget-container .input-field input:focus,
+        #buysense-widget-container .input-field select:focus {
+            outline: none;
+            background: rgba(25, 30, 50, 0.6);
+        }
+
+        #buysense-widget-container .input-field:focus-within {
+            box-shadow: var(--glow-secondary);
+            border-color: var(--tech-accent);
+        }
+
+        #buysense-widget-container .input-group .info {
+            font-size: 12px;
+            color: #687a8f;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* Results Cards */
+        #buysense-widget-container .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        #buysense-widget-container .result-card {
+            background: rgba(20, 35, 25, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        #buysense-widget-container .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-primary);
+        }
+
+        #buysense-widget-container .result-title {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        #buysense-widget-container .value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        #buysense-widget-container .price-value {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+
+        #buysense-widget-container .summary-value {
+            color: var(--tech-accent);
+        }
+
+        #buysense-widget-container .result-subtext {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        #buysense-widget-container .breakdown-section {
+            margin-top: 25px;
+            background: rgba(20, 35, 25, 0.6);
+            border-radius: 10px;
+            padding: 18px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px);
+        }
+
+        #buysense-widget-container .breakdown-section h4 {
+            font-size: 17px;
+            margin-bottom: 18px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #buysense-widget-container .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #buysense-widget-container .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        #buysense-widget-container .breakdown-item .label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #buysense-widget-container .breakdown-item .value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        #buysense-widget-container .breakdown-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            margin-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        #buysense-widget-container .days-market-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        /* Buttons */
+        #buysense-widget-container .calculator-button {
+            background: linear-gradient(45deg, var(--tech-accent), #00b248);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 25px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 200, 83, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        #buysense-widget-container .calculator-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        #buysense-widget-container .calculator-button:hover::before {
+            left: 100%;
+        }
+
+        #buysense-widget-container .calculator-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 200, 83, 0.4);
+        }
+
+        #buysense-widget-container .calculator-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.3);
+        }
+
+        #buysense-widget-container .calculator-button.secondary {
+            background: transparent;
+            color: var(--tech-accent);
+            border: 1px solid var(--tech-accent);
+            box-shadow: none;
+        }
+
+        /* Footer */
+        #buysense-widget-container .calculator-footer {
+            background: linear-gradient(90deg, rgba(10, 30, 18, 0.8) 0%, rgba(15, 42, 28, 0.8) 100%);
+            padding: 20px 30px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px;
+            margin-top: 20px;
+            z-index: 10;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        #buysense-widget-container .pro-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #buysense-widget-container .pro-logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--tech-highlight), var(--tech-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #buysense-widget-container .pro-tagline {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Disclaimer */
+        #buysense-widget-container .disclaimer {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(20, 35, 25, 0.6);
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        #buysense-widget-container .methodology {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(20, 35, 25, 0.4);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Pro tag */
+        #buysense-widget-container .pro-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, var(--tech-accent), #00b248);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        /* Animations */
+        @keyframes highlight {
+            0% { background-color: rgba(67, 217, 224, 0.1); }
+            100% { background-color: transparent; }
+        }
+        
+        .highlight {
+            animation: highlight 1s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            #buysense-widget-container .days-market-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            #buysense-widget-container .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            #buysense-widget-container .pro-header h1 {
+                font-size: 32px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            #buysense-widget-container .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            #buysense-widget-container .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            #buysense-widget-container .pro-header h1 {
+                font-size: 28px;
+            }
+            
+            #buysense-widget-container .calculator-footer {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Isolated widget container -->
+    <div id="buysense-widget-container">
+        <!-- Tech elements -->
+        <div class="tech-particles" id="techParticles"></div>
+        <div class="circuit-lines"></div>
+        <div class="scan-line"></div>
+        <div class="tech-header"></div>
+        
+        <div class="container">
+            <div class="pro-header">
+                <h1><i class="fas fa-chart-line"></i> BuySense™ - Real Estate Suite</h1>
+                <p>Advanced tech-powered tools for real estate investors and financial advisors</p>
+                <div class="pro-badge">
+                    <i class="fas fa-certificate"></i> PRO EDITION
+                </div>
+            </div>
+            
+            <div class="dashboard-container">
+                <!-- Tabs Navigation -->
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="rent-buy">
+                            <i class="fas fa-balance-scale"></i> Rent vs. Buy Analysis
+                        </button>
+                        <button class="tab-button" data-tab="days-market">
+                            <i class="fas fa-clock"></i> Days on Market Impact
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Rent vs. Buy Tab -->
+                <div id="rent-buy-tab" class="tab-content active">
+                    <div class="section-container">
+                        <div class="pro-tag">PRO<sup>®</sup></div>
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div>
+                                <h3>Renting Details</h3>
+                                <p>Enter your current or expected rental information</p>
+                            </div>
+                        </div>
+                        
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label><i class="fas fa-dollar-sign"></i> Monthly Rent ($)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumRent" value="2500">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-chart-line"></i> Annual Rent Increase (%)</label>
+                                <div class="input-field">
+                                    <div class="symbol">%</div>
+                                    <input type="number" id="premiumRentIncrease" value="3.5" step="0.1">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-shield-alt"></i> Renter's Insurance ($/month)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumRentersInsurance" value="25">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-container">
+                        <div class="pro-tag">PRO<sup>®</sup></div>
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div>
+                                <h3>Buying Details</h3>
+                                <p>Enter your property purchase information</p>
+                            </div>
+                        </div>
+                        
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label><i class="fas fa-home"></i> Home Price ($)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumHomePrice" value="650000">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-money-bill-wave"></i> Down Payment ($)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumDownPayment" value="130000">
+                                </div>
+                                <p class="info" id="premiumDownPaymentPercent">20% of home price</p>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-calendar"></i> Loan Term (years)</label>
+                                <div class="input-field">
+                                    <div class="symbol"><i class="fas fa-calendar"></i></div>
+                                    <input type="number" id="premiumLoanTerm" value="30">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-percent"></i> Interest Rate (%)</label>
+                                <div class="input-field">
+                                    <div class="symbol">%</div>
+                                    <input type="number" id="premiumInterestRate" value="5.75" step="0.01">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-landmark"></i> Annual Property Tax ($)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumTax" value="6500">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-shield-alt"></i> Annual Home Insurance ($)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumInsurance" value="1800">
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-tools"></i> Monthly Maintenance & HOA ($)</label>
+                                <div class="input-field">
+                                    <div class="symbol">$</div>
+                                    <input type="number" id="premiumHOA" value="350">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-container">
+                        <div class="pro-tag">PRO<sup>®</sup></div>
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h3>Time Frame & Market Factors</h3>
+                                <p>Set your investment horizon and market expectations</p>
+                            </div>
+                        </div>
+                        
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label><i class="fas fa-clock"></i> Years Planning to Stay</label>
+                                <div class="input-field">
+                                    <div class="symbol"><i class="fas fa-clock"></i></div>
+                                    <input type="number" id="premiumYears" value="7">
+                                </div>
+                                <p class="info">Typical break-even is 5-7 years</p>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-chart-line"></i> Annual Home Appreciation (%)</label>
+                                <div class="input-field">
+                                    <div class="symbol">%</div>
+                                    <input type="number" id="premiumAppreciation" value="3.0" step="0.1">
+                                </div>
+                                <p class="info">Based on historical averages</p>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-chart-pie"></i> Investment Return Rate (%)</label>
+                                <div class="input-field">
+                                    <div class="symbol">%</div>
+                                    <input type="number" id="premiumInvestmentReturn" value="6.0" step="0.1">
+                                </div>
+                                <p class="info">Expected return on alternative investments</p>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label><i class="fas fa-money-bill-wave"></i> Inflation Rate (%)</label>
+                                <div class="input-field">
+                                    <div class="symbol">%</div>
+                                    <input type="number" id="premiumInflation" value="2.5" step="0.1">
+                                </div>
+                                <p class="info">Long-term inflation expectation</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section-container">
+                        <div class="pro-tag">PRO<sup>®</sup></div>
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div>
+                                <h3>Financial Analysis Results</h3>
+                                <p>Detailed comparison of renting vs. buying over your timeframe</p>
+                            </div>
+                        </div>
+                        
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-title">Total Renting Cost</div>
+                                <div class="value price-value" id="premiumRentCost">$--</div>
+                                <div class="result-subtext">Over <span id="premiumYearsDisplay">--</span> years</div>
+                            </div>
+                            
+                            <div class="result-card">
+                                <div class="result-title">Total Buying Cost</div>
+                                <div class="value price-value" id="premiumBuyCost">$--</div>
+                                <div class="result-subtext">After equity accumulation</div>
+                            </div>
+                            
+                            <div class="result-card">
+                                <div class="result-title">Net Financial Position</div>
+                                <div class="value price-value" id="premiumNetPosition">$--</div>
+                                <div class="result-subtext">Buying advantage: <span id="premiumAdvantage">$--</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="breakdown-section">
+                            <h4><i class="fas fa-lightbulb"></i> Professional Recommendation</h4>
+                            <div class="breakdown-item">
+                                <div class="label">
+                                    <i class="fas fa-star"></i> Recommendation
+                                </div>
+                                <div class="value" id="premiumRecommendationText">-- Loading Analysis --</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="label">
+                                    <i class="fas fa-coins"></i> Projected Savings
+                                </div>
+                                <div class="value" id="premium-savings">$--</div>
+                            </div>
+                            <div class="breakdown-item">
+                                <div class="label">
+                                    <i class="fas fa-hourglass-half"></i> Time to Break Even
+                                </div>
+                                <div class="value" id="premium-breakeven">-- years</div>
+                            </div>
+                            <div class="breakdown-total">
+                                <div class="label">Detailed Analysis:</div>
+                                <div class="value" id="premiumRecommendationDetail">Based on your inputs and current market conditions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="calculator-button" id="premiumCalcButton">
+                            <i class="fas fa-calculator"></i> Analyze Financial Scenario
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Days on Market Tab -->
+                <div id="days-market-tab" class="tab-content">
+                    <div class="section-container">
+                        <div class="pro-tag">PRO<sup>®</sup></div>
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h3>Days on Market Impact Calculator</h3>
+                                <p>Calculate price depreciation based on days on market and daily rate</p>
+                            </div>
+                        </div>
+                        
+                        <div class="days-market-container">
+                            <div>
+                                <div class="input-grid">
+                                    <div class="input-group">
+                                        <label><i class="fas fa-tag"></i> Original Price ($)</label>
+                                        <div class="input-field">
+                                            <div class="symbol">$</div>
+                                            <input type="number" id="domOriginalPrice" value="750000">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label><i class="fas fa-calendar-days"></i> Days on Market</label>
+                                        <div class="input-field">
+                                            <div class="symbol"><i class="fas fa-calendar"></i></div>
+                                            <input type="number" id="domDays" value="45" min="1" max="365">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label><i class="fas fa-arrow-down"></i> Daily Depreciation Rate (%)</label>
+                                        <div class="input-field">
+                                            <div class="symbol">%</div>
+                                            <input type="number" id="domDepreciationRate" value="0.1" step="0.01" min="0.01" max="1">
+                                        </div>
+                                        <p class="info">Typical rates: 0.05% to 0.3% per day</p>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label><i class="fas fa-building"></i> Market Segment</label>
+                                        <div class="input-field">
+                                            <div class="symbol"><i class="fas fa-city"></i></div>
+                                            <select id="domMarketSegment">
+                                                <option value="luxury">Luxury Residential</option>
+                                                <option value="standard">Standard Residential</option>
+                                                <option value="commercial">Commercial</option>
+                                                <option value="vacation">Vacation Property</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="calculator-button" id="domCalculateButton">
+                                    <i class="fas fa-calculator"></i> Calculate Depreciation
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="result-card">
+                                    <div class="result-title">Adjusted Price</div>
+                                    <div class="value price-value" id="domAdjustedPrice">$--</div>
+                                    <div class="result-subtext">After depreciation impact</div>
+                                </div>
+                                
+                                <div class="breakdown-section">
+                                    <h4><i class="fas fa-calculator"></i> Depreciation Breakdown</h4>
+                                    
+                                    <div class="breakdown-item">
+                                        <div class="label">
+                                            <i class="fas fa-tag"></i> Original Price
+                                        </div>
+                                        <div class="value" id="bdOriginalPrice">$--</div>
+                                    </div>
+                                    
+                                    <div class="breakdown-item">
+                                        <div class="label">
+                                            <i class="fas fa-clock"></i> Days on Market
+                                        </div>
+                                        <div class="value" id="bdDays">--</div>
+                                    </div>
+                                    
+                                    <div class="breakdown-item">
+                                        <div class="label">
+                                            <i class="fas fa-arrow-down"></i> Daily Depreciation Rate
+                                        </div>
+                                        <div class="value" id="bdDepreciationRate">--%</div>
+                                    </div>
+                                    
+                                    <div class="breakdown-item">
+                                        <div class="label">
+                                            <i class="fas fa-building"></i> Market Segment
+                                        </div>
+                                        <div class="value" id="bdMarketSegment">--</div>
+                                    </div>
+                                    
+                                    <div class="breakdown-item">
+                                        <div class="label">
+                                            <i class="fas fa-percent"></i> Total Depreciation
+                                        </div>
+                                        <div class="value" id="bdTotalDepreciation">--%</div>
+                                    </div>
+                                    
+                                    <div class="breakdown-total">
+                                        <div class="label">Total Depreciation:</div>
+                                        <div class="value" id="bdTotalDepreciationAmount">$--</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="methodology">
+                            <h4><i class="fas fa-calculator"></i> Depreciation Methodology</h4>
+                            <p>Our depreciation algorithm uses industry-standard approaches to estimate price impact:</p>
+                            
+                            <ul>
+                                <li><strong>Daily Compounding:</strong> Depreciation compounds daily based on the daily rate</li>
+                                <li><strong>Market Segment Factors:</strong> Different market segments have different depreciation thresholds</li>
+                                <li><strong>Exponential Decay:</strong> Price decreases exponentially with time on market</li>
+                            </ul>
+                            
+                            <p>Calculation formula:</p>
+                            <p>Adjusted Price = Original Price × (1 - Daily Rate)<sup>Days on Market</sup></p>
+                            
+                            <p class="info">
+                                <i class="fas fa-exclamation-circle"></i> Note: This calculation is an estimate based on market averages. 
+                                Actual depreciation may vary based on property condition, location, and market conditions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calculator-footer">
+                <div class="pro-brand">
+                    <div class="pro-logo">PRO<sup>®</sup></div>
+                    <div class="pro-tagline">Real Estate Analysis Platform for Investors & Advisors</div>
+                </div>
+                <button class="calculator-button" id="exportButton">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+            </div>
+            
+            <div class="disclaimer">
+                <p><strong>BuySense™ Analysis Suite</strong> is a registered trademark used under license by Real Estate Analytics LLC. This model is for professional use only and incorporates proprietary methodologies developed for real estate investors.</p>
+                <p>Analysis results are highly sensitive to input assumptions. This tool does not constitute investment advice. Users should conduct their own due diligence and consult with real estate professionals before making investment decisions. All outputs are estimates based on the provided inputs and standard financial models.</p>
+                <p>© 2023 BuySense™ Real Estate Tools. All rights reserved. Unauthorized use or distribution prohibited.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Wrap everything in a scoped function
+        (function() {
+            const widgetContainer = document.getElementById('buysense-widget-container');
+            
+            // Create animated background particles
+            function createTechParticles() {
+                const particlesContainer = widgetContainer.querySelector('.tech-particles');
+                const particleCount = 100;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('tech-particle');
+                    
+                    // Random position
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    
+                    // Random size
+                    const size = Math.random() * 4 + 1;
+                    
+                    // Random animation delay
+                    const delay = Math.random() * 3;
+                    
+                    particle.style.left = `${posX}%`;
+                    particle.style.top = `${posY}%`;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.animationDelay = `${delay}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            createTechParticles();
+            
+            // Tab functionality
+            widgetContainer.querySelectorAll('.tab-button').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    widgetContainer.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    widgetContainer.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show corresponding tab content
+                    const tabId = this.getAttribute('data-tab');
+                    widgetContainer.querySelector(`#${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Format currency with commas
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+            
+            function formatNumber(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+            
+            // Rent vs. Buy Analysis Functions
+            function updateDownPaymentPercent() {
+                const homePrice = parseFloat(widgetContainer.querySelector('#premiumHomePrice').value) || 0;
+                const downPayment = parseFloat(widgetContainer.querySelector('#premiumDownPayment').value) || 0;
+                const percent = homePrice ? (downPayment / homePrice * 100) : 0;
+                widgetContainer.querySelector('#premiumDownPaymentPercent').textContent = `${percent.toFixed(1)}% of home price`;
+            }
+            
+            function calculateRentVsBuy() {
+                // Get renting inputs
+                const rent = parseFloat(widgetContainer.querySelector('#premiumRent').value) || 0;
+                const rentIncrease = parseFloat(widgetContainer.querySelector('#premiumRentIncrease').value) / 100 || 0;
+                const rentersInsurance = parseFloat(widgetContainer.querySelector('#premiumRentersInsurance').value) || 0;
+                
+                // Get buying inputs
+                const homePrice = parseFloat(widgetContainer.querySelector('#premiumHomePrice').value) || 0;
+                const downPayment = parseFloat(widgetContainer.querySelector('#premiumDownPayment').value) || 0;
+                const loanTerm = parseInt(widgetContainer.querySelector('#premiumLoanTerm').value) || 30;
+                const rate = parseFloat(widgetContainer.querySelector('#premiumInterestRate').value) / 100 / 12 || 0;
+                const years = parseInt(widgetContainer.querySelector('#premiumYears').value) || 5;
+                const propertyTax = parseFloat(widgetContainer.querySelector('#premiumTax').value) || 0;
+                const insurance = parseFloat(widgetContainer.querySelector('#premiumInsurance').value) || 0;
+                const hoa = parseFloat(widgetContainer.querySelector('#premiumHOA').value) || 0;
+                
+                // Get market factors
+                const appreciation = parseFloat(widgetContainer.querySelector('#premiumAppreciation').value) / 100 || 0;
+                const investmentReturn = parseFloat(widgetContainer.querySelector('#premiumInvestmentReturn').value) / 100 || 0;
+                const inflation = parseFloat(widgetContainer.querySelector('#premiumInflation').value) / 100 || 0;
+                
+                // Validate inputs
+                if (rent <= 0 || homePrice <= 0 || years <= 0) {
+                    alert("Please enter valid values for rent, home price, and years.");
+                    return;
+                }
+                
+                // Calculate loan details
+                const loanAmount = homePrice - downPayment;
+                const n = loanTerm * 12;
+                const monthlyMortgage = loanAmount * rate / (1 - Math.pow(1 + rate, -n));
+                const monthlyPropertyTax = propertyTax / 12;
+                const monthlyInsurance = insurance / 12;
+                
+                // Total Rent Cost Calculation (with rent increases)
+                let totalRent = 0;
+                let currentRent = rent;
+                for (let i = 0; i < years; i++) {
+                    totalRent += (currentRent + rentersInsurance) * 12;
+                    currentRent *= (1 + rentIncrease);
+                }
+                
+                // Total Buying Cost Calculation
+                let totalBuyCost = 0;
+                let remainingBalance = loanAmount;
+                
+                // Calculate monthly costs for the period
+                for (let i = 0; i < years * 12; i++) {
+                    // Interest portion of payment
+                    const interest = remainingBalance * rate;
+                    // Principal portion
+                    const principal = monthlyMortgage - interest;
+                    
+                    totalBuyCost += monthlyMortgage + monthlyPropertyTax + monthlyInsurance + hoa;
+                    remainingBalance -= principal;
+                    
+                    // Break early if loan is paid off
+                    if (remainingBalance <= 0) break;
+                }
+                
+                // Add initial costs
+                totalBuyCost += downPayment;
+                
+                // Factor in appreciation and opportunity cost
+                const futureHomeValue = homePrice * Math.pow(1 + appreciation, years);
+                const equity = futureHomeValue - Math.max(remainingBalance, 0);
+                
+                // Opportunity cost of down payment
+                const opportunityCost = downPayment * Math.pow(1 + investmentReturn, years) - downPayment;
+                
+                // Net buying cost (total costs minus equity gained)
+                const netBuyCost = totalBuyCost - equity + opportunityCost;
+                
+                // Calculate savings/advantage
+                const netPosition = totalRent - netBuyCost;
+                
+                // Determine recommendation
+                let recommendation = netBuyCost < totalRent ? "BUY" : "RENT";
+                let recommendationDetail = "";
+                
+                if (recommendation === "BUY") {
+                    const savings = totalRent - netBuyCost;
+                    recommendationDetail = `Buying will save you approximately ${formatCurrency(savings)} over ${years} years.`;
+                } else {
+                    const savings = netBuyCost - totalRent;
+                    recommendationDetail = `Renting will save you approximately ${formatCurrency(savings)} over ${years} years.`;
+                }
+                
+                // Calculate break-even point
+                let breakEvenYears = 0;
+                let rentCumulative = 0;
+                let buyCumulative = downPayment;
+                let currentRentBreak = rent;
+                
+                for (let y = 1; y <= 30; y++) {
+                    // Annual rent cost
+                    rentCumulative += (currentRentBreak + rentersInsurance) * 12;
+                    currentRentBreak *= (1 + rentIncrease);
+                    
+                    // Annual buying cost
+                    let annualBuyCost = 0;
+                    for (let m = 0; m < 12; m++) {
+                        const interest = remainingBalance * rate;
+                        const principal = monthlyMortgage - interest;
+                        annualBuyCost += monthlyMortgage + monthlyPropertyTax + monthlyInsurance + hoa;
+                        remainingBalance -= principal;
+                    }
+                    buyCumulative += annualBuyCost;
+                    
+                    // Factor in appreciation and opportunity cost for this year
+                    const homeValueYr = homePrice * Math.pow(1 + appreciation, y);
+                    const equityYr = homeValueYr - Math.max(remainingBalance, 0);
+                    const oppCostYr = downPayment * Math.pow(1 + investmentReturn, y) - downPayment;
+                    
+                    const netBuyCostYr = buyCumulative - equityYr + oppCostYr;
+                    
+                    if (netBuyCostYr < rentCumulative) {
+                        breakEvenYears = y;
+                        break;
+                    }
+                }
+                
+                // Update display
+                widgetContainer.querySelector('#premiumRentCost').textContent = formatCurrency(totalRent);
+                widgetContainer.querySelector('#premiumBuyCost').textContent = formatCurrency(netBuyCost);
+                widgetContainer.querySelector('#premiumNetPosition').textContent = formatCurrency(netPosition);
+                widgetContainer.querySelector('#premiumYearsDisplay').textContent = years;
+                widgetContainer.querySelector('#premiumAdvantage').textContent = formatCurrency(Math.abs(netPosition));
+                widgetContainer.querySelector('#premiumRecommendationText').textContent = recommendation;
+                widgetContainer.querySelector('#premiumRecommendationDetail').textContent = recommendationDetail;
+                widgetContainer.querySelector('#premium-savings').textContent = formatCurrency(Math.abs(netPosition));
+                widgetContainer.querySelector('#premium-breakeven').textContent = breakEvenYears > 0 ? `${breakEvenYears} years` : ">30 years";
+                
+                // Add highlight animation
+                const resultElements = widgetContainer.querySelectorAll('.value');
+                resultElements.forEach(el => {
+                    el.classList.add('highlight');
+                    setTimeout(() => {
+                        el.classList.remove('highlight');
+                    }, 800);
+                });
+            }
+            
+            // Days on Market Calculator Functions
+            function calculateDaysOnMarketImpact() {
+                const originalPrice = parseFloat(widgetContainer.querySelector('#domOriginalPrice').value) || 0;
+                const days = parseInt(widgetContainer.querySelector('#domDays').value) || 0;
+                const dailyRate = parseFloat(widgetContainer.querySelector('#domDepreciationRate').value) / 100 || 0;
+                const marketSegment = widgetContainer.querySelector('#domMarketSegment').value;
+                
+                // Validate inputs
+                if (originalPrice <= 0 || days <= 0 || dailyRate <= 0) {
+                    alert("Please enter valid values for price, days, and depreciation rate.");
+                    return;
+                }
+                
+                // Apply market segment multiplier
+                let segmentMultiplier = 1.0;
+                let segmentName = "Luxury Residential";
+                
+                switch(marketSegment) {
+                    case "luxury":
+                        segmentMultiplier = 1.2; // Luxury depreciates faster
+                        segmentName = "Luxury Residential";
+                        break;
+                    case "standard":
+                        segmentMultiplier = 1.0;
+                        segmentName = "Standard Residential";
+                        break;
+                    case "commercial":
+                        segmentMultiplier = 0.8; // Commercial depreciates slower
+                        segmentName = "Commercial";
+                        break;
+                    case "vacation":
+                        segmentMultiplier = 1.1; // Vacation properties depreciate faster
+                        segmentName = "Vacation Property";
+                        break;
+                }
+                
+                // Calculate depreciation
+                const adjustedRate = dailyRate * segmentMultiplier;
+                const totalDepreciation = 1 - Math.pow(1 - adjustedRate, days);
+                const totalDepreciationAmount = originalPrice * totalDepreciation;
+                const adjustedPrice = originalPrice - totalDepreciationAmount;
+                
+                // Update display
+                widgetContainer.querySelector('#domAdjustedPrice').textContent = formatCurrency(adjustedPrice);
+                widgetContainer.querySelector('#bdOriginalPrice').textContent = formatCurrency(originalPrice);
+                widgetContainer.querySelector('#bdDays').textContent = days;
+                widgetContainer.querySelector('#bdDepreciationRate').textContent = formatNumber(dailyRate * 100) + "%";
+                widgetContainer.querySelector('#bdMarketSegment').textContent = segmentName;
+                widgetContainer.querySelector('#bdTotalDepreciation').textContent = formatNumber(totalDepreciation * 100) + "%";
+                widgetContainer.querySelector('#bdTotalDepreciationAmount').textContent = formatCurrency(totalDepreciationAmount);
+                
+                // Add highlight animation
+                widgetContainer.querySelector('#domAdjustedPrice').classList.add('highlight');
+                setTimeout(() => {
+                    widgetContainer.querySelector('#domAdjustedPrice').classList.remove('highlight');
+                }, 800);
+            }
+            
+            // Set up event listeners
+            widgetContainer.querySelector('#premiumCalcButton').addEventListener('click', calculateRentVsBuy);
+            widgetContainer.querySelector('#domCalculateButton').addEventListener('click', calculateDaysOnMarketImpact);
+            
+            widgetContainer.querySelector('#premiumHomePrice').addEventListener('input', updateDownPaymentPercent);
+            widgetContainer.querySelector('#premiumDownPayment').addEventListener('input', updateDownPaymentPercent);
+            
+            widgetContainer.querySelector('#exportButton').addEventListener('click', () => {
+                alert('Report exported successfully (simulated)');
+            });
+            
+            // Initialize
+            updateDownPaymentPercent();
+            calculateRentVsBuy();
+            calculateDaysOnMarketImpact();
+        })();
+    </script>
+</body>
+</html>
